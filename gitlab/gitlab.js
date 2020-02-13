@@ -1,5 +1,5 @@
 const gitlab = require('node-gitlab');
-const { GITLAB_API_URL, GITLAB_TOKEN } = require('./const');
+const { GITLAB_API_URL, GITLAB_TOKEN } = require('../const');
 
 const client = gitlab.create({
   api: GITLAB_API_URL,
@@ -9,6 +9,14 @@ const client = gitlab.create({
 const getUserByUsername = (username) => {
     return new Promise(resolve => {
         client.request('get', `/users?username=${username}`, {}, function (err, user) {
+            resolve(user);
+        });
+    });
+}
+
+const getUserById = (id) => {
+    return new Promise(resolve => {
+        client.request('get', `/users/${id}`, {}, function (err, user) {
             resolve(user);
         });
     });
@@ -25,5 +33,6 @@ const getAllUsersOnDiscussion = (projectId, mergeRequestId, discussionId) => {
 
 module.exports = {
     getUserByUsername,
-    getAllUsersOnDiscussion
+    getAllUsersOnDiscussion,
+    getUserById
 }

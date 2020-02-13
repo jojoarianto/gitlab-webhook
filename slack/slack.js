@@ -1,5 +1,5 @@
 const { WebClient } = require('@slack/web-api');
-const { SLACK_TOKEN } = require('./const');
+const { SLACK_TOKEN } = require('../const');
 
 const token = SLACK_TOKEN;
 const web = new WebClient(token);
@@ -14,6 +14,19 @@ const web = new WebClient(token);
 const sendMessage = async (conversationId, msg) => {
     const res = await web.chat.postMessage({ channel: conversationId, text: msg });
     return res;
+}
+
+/**
+ * sendMessage is about sending message to slack via bot by email
+ * 
+ * @param {string} email 
+ * @param {string} msg 
+ */
+const sendMessageByEmail = async (email, msg) => {
+    const userOnSlack = await getUserByEmail(email);
+    // TODO: handling user not found
+    const result = await sendMessage(userOnSlack.id, msg);
+    return result;
 }
 
 /**
@@ -34,5 +47,6 @@ const getUserByEmail = async (email) => {
 
 module.exports = {
   getUserByEmail,
-  sendMessage
+  sendMessage, 
+  sendMessageByEmail
 }
