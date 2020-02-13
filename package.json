@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@slack/events-api": "^2.3.1",
+    "@slack/web-api": "^5.7.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "node-gitlab": "^1.6.1"
