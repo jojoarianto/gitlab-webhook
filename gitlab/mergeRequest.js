@@ -1,5 +1,6 @@
 const gitlab = require('./gitlab');
 const slack = require('../slack/slack');
+const { buildMergeRequestMessage } = require('./helper');
 
 /**
  * mergeRequest is about merge request event
@@ -15,9 +16,11 @@ const mergeRequest = async (payload) => {
     const authorId = payload.object_attributes.author_id;
     const user = await gitlab.getUserById(authorId);
 
+    const message = buildMergeRequestMessage(payload, user.name, reviewer.name);
+
     //  send message
-    const res = await slack.sendMessageByEmail(reviewer.email, 'merge request open');
-    const res2 = await slack.sendMessageByEmail(user.email, 'merge request open');
+    const res = await slack.sendMessageByEmail(reviewer.email, message);
+    const res2 = await slack.sendMessageByEmail(user.email, message);
 
     // print log
     console.log(res);
