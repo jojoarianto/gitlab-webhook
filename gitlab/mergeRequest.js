@@ -1,6 +1,11 @@
 const gitlab = require('./gitlab');
 const slack = require('../slack/slack');
 
+/**
+ * mergeRequest is about merge request event
+ * 
+ * @param {req.body} payload 
+ */
 const mergeRequest = async (payload) => {
     // get assign / reviewer user (gitlab)
     const reviewerId = payload.object_attributes.assignee_id; 

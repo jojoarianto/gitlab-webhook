@@ -6,6 +6,12 @@ const client = gitlab.create({
   privateToken: GITLAB_TOKEN
 });
 
+/**
+ * getUserByUsername get single user by it's username
+ * 
+ * @param {string} username 
+ * @return {Object} user
+ */
 const getUserByUsername = (username) => {
     return new Promise(resolve => {
         client.request('get', `/users?username=${username}`, {}, function (err, user) {
@@ -14,6 +20,12 @@ const getUserByUsername = (username) => {
     });
 }
 
+/**
+ * getUserById get single user by it's id
+ * 
+ * @param {int} id 
+ * @return {Object} user
+ */
 const getUserById = (id) => {
     return new Promise(resolve => {
         client.request('get', `/users/${id}`, {}, function (err, user) {
@@ -22,6 +34,13 @@ const getUserById = (id) => {
     });
 }
 
+/**
+ * getAllUsersOnDiscussion get all user in spesific disscussion (comment)
+ * 
+ * @param {int} projectId 
+ * @param {int} mergeRequestId 
+ * @param {int} discussionId 
+ */
 const getAllUsersOnDiscussion = (projectId, mergeRequestId, discussionId) => {
     const url = `${GITLAB_API_URL}/projects/${projectId}/merge_requests/${mergeRequestId}/discussions/${discussionId}`;
     return new Promise(resolve => {
