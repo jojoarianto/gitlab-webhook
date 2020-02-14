@@ -2,8 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const gitlab = require('./gitlab/gitlab');
-const { mergeRequest } = require('./gitlab/mergeRequest');
 const slack = require('./slack/slack');
+const { mergeRequest } = require('./gitlab/mergeRequest');
+const { commentsOnMergeRequest } = require('./gitlab/comments');
 const { APP_PORT } = require('./const');
 
 app.use(bodyParser.json());
@@ -21,13 +22,14 @@ app.post('/webhook', async (req, res) => {
     console.log(JSON.stringify(req.body));
 
     if (event === 'Merge Request Hook') {
-        const user = await mergeRequest(req.body);
-        res.send({data: user});
+        const result = await mergeRequest(req.body);
+        res.send({data: result});
         return;
     }
 
     if (event === 'Note Hook') {
-        // TODO: comment on merge request
+        const result = await commentsOnMergeRequest(req.body);
+        res.send({data: result});
         return;
     }
 })
