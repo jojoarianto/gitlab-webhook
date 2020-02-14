@@ -29,6 +29,9 @@ const commentsOnMergeRequest = async (payload) => {
         console.log(res2);
     }
 
+    // sent notif to all user in same discussion
+    // tag people on comment
+
     return true;
 }
 
