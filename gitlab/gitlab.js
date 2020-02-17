@@ -1,5 +1,7 @@
 const gitlab = require('node-gitlab');
 const { GITLAB_API_URL, GITLAB_TOKEN } = require('../const');
+const axios = require('axios');
+const constanta = require('../const');
 
 const client = gitlab.create({
   api: GITLAB_API_URL,
@@ -35,23 +37,27 @@ const getUserById = (id) => {
 }
 
 /**
- * getAllUsersOnDiscussion get all user in spesific disscussion (comment)
+ * getDiscussion get all user in spesific disscussion (comment)
  * 
  * @param {int} projectId 
  * @param {int} mergeRequestId 
  * @param {int} discussionId 
  */
-const getAllUsersOnDiscussion = (projectId, mergeRequestId, discussionId) => {
+const getDiscussion = async (projectId, mergeRequestId, discussionId) => {
     const url = `${GITLAB_API_URL}/projects/${projectId}/merge_requests/${mergeRequestId}/discussions/${discussionId}`;
-    return new Promise(resolve => {
-        client.request('get', url, {}, function (err, users) {
-            resolve(users);
-        });
-    });
+    try {
+        const response = await axios.get(url, { headers: { 'private-token': constanta.GITLAB_TOKEN } });
+        if (response.status != 200) return null;
+
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }
 
 module.exports = {
     getUserByUsername,
-    getAllUsersOnDiscussion,
+    getDiscussion,
     getUserById
 }
