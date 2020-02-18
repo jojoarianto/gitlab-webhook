@@ -34,4 +34,7 @@ app.post('/webhook', async (req, res) => {
     }
 })
 
-app.listen(APP_PORT, () => console.log(`App listening on port ${APP_PORT}!`))
+// app.listen(APP_PORT, () => console.log(`App listening on port ${APP_PORT}!`));
+
+// Set our GCF handler to our Express app.
+module.exports.webhook = app;
