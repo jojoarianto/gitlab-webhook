@@ -18,5 +18,10 @@ npm install
 npm run start
 ```
 
+### Test
+```
+npm run test
+```
+
 ## Payload for test
 - [merge request](https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#merge-request-events)

@@ -1,4 +1,5 @@
 const { buildMergeRequestMessage, buildCommentMessageForOwner } = require('./../../gitlab/helper');
+const { _extractUsername } = require('./../../gitlab/comments');
 const fs = require('fs');
 
 test('build message mr should be okay', () => {
@@ -34,3 +35,8 @@ Merge Request: *ABC-1 add docs*
 Link: https://gitlab.example.com/jojo/slack-incoming-hook/merge_requests/1#note_70460
     `);
 });
+
+test('extract username on comment should correct', () => {
+    const actual = _extractUsername("@jon mas sorry ya. ini cuman buat testing wkwk. testing ngetag orang");
+    expect(actual).toStrictEqual(["@jon"]);
+})

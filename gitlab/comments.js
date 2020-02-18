@@ -4,7 +4,6 @@ const { buildCommentMessageForOwner } = require("./helper");
 
 /**
  * commentsOnMergeRequest is about handling comment event from gitlah
- * 
  * @param {Object} payload 
  */
 const commentsOnMergeRequest = async (payload) => {
@@ -17,7 +16,7 @@ const commentsOnMergeRequest = async (payload) => {
     await sentNotifToMrCreator(payload, message);
     
     // sent notif to mentioned user
-    sentNotifToMentioned(payload);
+    await sentNotifToMentioned(payload, message);
     
     // sent notif to all user in same discussion
     await sentNotifToAllUserOnDiscussion(payload, message);
@@ -82,21 +81,41 @@ const sentNotifToAllUserOnDiscussion = async (payload, message) => {
     usersEmail = usersEmail.filter(_onlyUnique);
     console.log(usersEmail);
     
-    // sending notif
-    for (const email of usersEmail) {
-        try {
-            const response = await slack.sendMessageByEmail(email, message);
-            console.log(response);
-        } catch (error) {
-            console.log(error);
+    await slack.sendMessageByEmails(usersEmail, message);
+    return true;
+};
+
+/**
+ * sentNotifToMentioned is about sent notif to mentioned user
+ * @param {Object} payload 
+ */
+const sentNotifToMentioned = async (payload, message) => {
+    const desc = payload.object_attributes.description;
+    let usernames = _extractUsername(desc);
+    usernames = usernames.filter(_onlyUnique);
+
+    const emails = [];
+    for (let username of usernames) {
+        username = username.substr(1);
+        const user = await gitlab.getUserByUsername(username);
+
+        if (user[0].email !== undefined) {
+            emails.push(user[0].email);
         }
     }
+
+    // adjust message
+    message = message.replace('[New Comment]', '[Youre Tagged in New Comment]');
+
+    // sent notif
+    console.log("sending message to ", emails);
+    await slack.sendMessageByEmails(emails, message);
 
     return true;
 };
 
-const sentNotifToMentioned = (payload) => {
-    return true;
+const _extractUsername = (desc) => {
+    return desc.match(/@\w*/g);
 };
 
 const _onlyUnique = (value, index, self) => { 
@@ -105,4 +124,5 @@ const _onlyUnique = (value, index, self) => {
 
 module.exports = {
     commentsOnMergeRequest,
+    _extractUsername,
 }

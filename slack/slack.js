@@ -30,6 +30,23 @@ const sendMessageByEmail = async (email, msg) => {
 }
 
 /**
+ * sendMessageByEmails is about sending message to slack to many email
+ * 
+ * @param {array[string]} emails
+ * @param {string} message
+ */
+const sendMessageByEmails = async (emails, msg) => {
+    for (const email of emails) {
+        try {
+            const response = await slack.sendMessageByEmail(email, msg);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
+
+/**
  * getUserByEmail is about get user by email
  * 
  * @param {string} email 
